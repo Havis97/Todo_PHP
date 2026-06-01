@@ -16,6 +16,13 @@
             ];
             $daftar_todo = serialize($todos);
             file_put_contents('todos.txt', $daftar_todo);
+            header('Location: index.php');
+    }
+    // cek get status
+    if(isset($_GET['status'])) {
+        $todos[$_GET['key']]['status'] = $_GET['status'];
+        file_put_contents('todos.txt', serialize($todos));
+        header('Location: index.php');
     }
 ?>
 <!DOCTYPE html>
@@ -37,8 +44,16 @@
     <ul>
         <?php foreach($todos as $key => $value):?>
         <li>
-            <input type="checkbox" name="todo">
-            <label><?php echo $value['todo']; ?></label>
+            <input type="checkbox" name="todo" onclick="window.location.href='index.php?status= <?php echo ($value['status']==1)? '0':'1';?> &key=<?php echo $key;?>'"<?php if($value['status']==1) echo 'checked'; ?>>
+            <label>
+                <?php 
+                if ($value['status'] == 1) {
+                    echo '<del>'.$value['todo'].'</del>';
+                } else {
+                    echo $value['todo'];
+                }
+                ?>
+            </label>
             <a href="#">Hapus</a>
         </li>
         <?php endforeach; ?>
