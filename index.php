@@ -1,5 +1,18 @@
 <?php
- $todos = [ ];
+    $todos = [ ];
+
+    function simpanData($daftar_todo){
+            file_put_contents('todos.txt', serialize($daftar_todo));
+            header('Location: index.php');
+    };
+    function ceklistData($ceklist){
+        file_put_contents('todos.txt', serialize($ceklist));
+        header('Location: index.php');
+    }
+    function hapusData($hapus){
+        file_put_contents('todos.txt', serialize($hapus));
+        header('Location: index.php');
+    }
 
     if(file_exists('todos.txt')) {
         $file = file_get_contents('todos.txt');
@@ -14,15 +27,17 @@
             'todo' =>$data,
             'status' => 0,
             ];
-            $daftar_todo = serialize($todos);
-            file_put_contents('todos.txt', $daftar_todo);
-            header('Location: index.php');
+        simpanData($todos);
     }
     // cek get status
     if(isset($_GET['status'])) {
         $todos[$_GET['key']]['status'] = $_GET['status'];
-        file_put_contents('todos.txt', serialize($todos));
-        header('Location: index.php');
+        ceklistData($todos);
+    }
+    // cek get delete
+    if(isset($_GET['hapus'])) {
+        unset($todos[$_GET['key']]);
+        hapusData($todos);
     }
 ?>
 <!DOCTYPE html>
@@ -54,7 +69,7 @@
                 }
                 ?>
             </label>
-            <a href="#">Hapus</a>
+            <a href="index.php?hapus=1&key=<?php echo $key; ?>">Hapus</a>
         </li>
         <?php endforeach; ?>
     </ul>
